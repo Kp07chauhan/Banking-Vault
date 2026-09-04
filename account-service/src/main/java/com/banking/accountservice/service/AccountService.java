@@ -77,19 +77,49 @@ public class AccountService {
         log.info("Account blocked: {}", accountNumber);
     }
 
+    public void deductBalance(String accountNumber, BigDecimal amount) {
+        log.info("Deducting balance {} from amount: {}",amount,accountNumber);
+
+        Account account = accountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(()-> new RuntimeException("Account not found"));
+
+        if (account.getStatus() != AccountStatus.ACTIVE) {
+            throw new RuntimeException("Account is not active");
+        }
+
+        if (account.getBalance().compareTo(amount)<0) {
+            throw new RuntimeException("Insufficient funds for account "+accountNumber);
+        }
+
+        account.setBalance(account.getBalance().subtract(amount));
+        accountRepository.save(account);
+
+        log.info("Balance update, New Balance: {}", account.getBalance());
+    }
+
+    public void creditBalance(String accountNumber, BigDecimal amount) {
+
+        log.info("Crediting {} to account: {}", amount, accountNumber);
+
+        Account account = accountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(()-> new RuntimeException("Account not found"));
+
+        account.setBalance(account.getBalance().add(amount));
+        accountRepository.save(account);
+
+        log.info("Balance Credited. New Balance: {}",account.getBalance());
+
+    }
 
 
 
-
+    // Generate unique 12 digit account number
     private String generateAccountNumber(){
-
         String accountNumber;
-
         do {
             long number = secureRandom.nextLong(1_000_000_000_000L);
             accountNumber = String.format("%012d",number);
         }while (accountRepository.existsByAccountNumber(accountNumber));
-
         return accountNumber;
     }
 
