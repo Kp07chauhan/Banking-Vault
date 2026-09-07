@@ -20,28 +20,28 @@ public class AccountController {
 
     private final AccountService accountService;
 
-    @PostMapping
+    @PostMapping("/create")     //     /api/v1/account/create
     public ResponseEntity<AccountResponse> createAccount(@Valid @RequestBody CreateAccountRequest request){
         return ResponseEntity.status(HttpStatus.CREATED).body(accountService.createAccount(request));
     }
 
-    @GetMapping("/{accountNumber}")
+    @GetMapping("/{accountNumber}")        // /api/v1/account/{accountNumber}
     public ResponseEntity<AccountResponse> getAccount(@PathVariable String accountNumber){
         return ResponseEntity.status(HttpStatus.OK).body(accountService.getAccount(accountNumber));
     }
 
-    @GetMapping("/{accountNumber}/balance")
+    @GetMapping("/{accountNumber}/balance")     //  api/v1/account/{accountNumber}/balance
     public ResponseEntity<BigDecimal> getBalance(@PathVariable String accountNumber){
         return ResponseEntity.status(HttpStatus.OK).body(accountService.getBalance(accountNumber));
     }
 
-    @PutMapping("/{accountNumber}/block")
+    @PutMapping("/{accountNumber}/block")       //   api/v1/account/{accountNumber}/block
     public ResponseEntity<String> blockAccount(@PathVariable String accountNumber){
         accountService.blockAccount(accountNumber);
         return ResponseEntity.ok("Account blocked Successfully");
     }
 
-    @PutMapping("/{accountNumber}/deduct")
+    @PutMapping("/{accountNumber}/deduct")      //  api/v1/account/{accountNumber}/deduct
     public ResponseEntity<String> deductionBalance(@PathVariable String accountNumber, @RequestParam BigDecimal amount){
         accountService.deductBalance(accountNumber,amount);
         return ResponseEntity.ok("Balance deducted successfully");

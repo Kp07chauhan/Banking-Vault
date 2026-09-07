@@ -2,19 +2,12 @@ spring:
   application:
     name: account-service
 
-  server:
-    port:8081
-  management:
-    endpoint:
-      web:
-        exposer:
-          include: health,info
-
   datasource:
-    url: jdbc:mysql://localhost:3306/account_db?createDatabaseIfNoExist=true
+    url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -24,7 +17,7 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
 
   kafka:
-    bootstrap-server: localhost:9092
+    bootstrap-servers: localhost:9092
     consumer:
       group-id: account-service-group
       auto-offset-reset: earliest
@@ -34,14 +27,22 @@ spring:
         spring:
           json:
             trusted:
-              package: "*"
+              packages: "*"
             use:
               type:
                 headers: false
             value:
               default:
                 type: java.util.HashMap
-      producer:
-        key-serializer: org.apache.kafka.common.serialization.StringSerializer
-        value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
+server:
+  port: 8081
+
+management:
+  endpoint:
+    web:
+      exposer:
+        include: health,info
