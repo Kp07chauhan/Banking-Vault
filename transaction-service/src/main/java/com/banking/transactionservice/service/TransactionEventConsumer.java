@@ -33,7 +33,7 @@ public class TransactionEventConsumer {
 
         try {
             String transactionId = (String) payload.get("transactionId");
-            String accountNumber = (String) payload.get("accountNUmber");
+            String accountNumber = (String) payload.get("accountNumber");
             String reason = (String) payload.get("reason");
 
             log.info("verification required - transaction: {} reason: {}",
@@ -76,7 +76,7 @@ public class TransactionEventConsumer {
     public void consumeFraudCheckCleanResult(@Payload Map<String, Object> payload){
 
         try {
-            String transactionId = (String) payload.get("accountNumber");
+            String transactionId = (String) payload.get("transactionId");
             transactionService.processCleanResult(transactionId);
         }catch (Exception e){
             log.error("Error processing fraud check result: {}", e.getMessage());
